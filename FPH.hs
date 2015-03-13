@@ -5,6 +5,28 @@ where
 import Data.List
 import Data.Char
 
+-- Exercises ------------------------------------------------------------------
+
+-- 3.12
+minList :: Ord a => [a] -> a
+minList [x] = x
+minList (x:xs) = x `min` minList xs
+
+-- 3.13
+delete' :: Eq a => a -> [a] -> [a]
+delete' _ [] = []
+delete' x (y:ys)
+  | x == y    = ys                -- delete' x ys to delete all occurences
+  | otherwise = y : delete' x ys
+
+-- 3.14
+srt :: Ord a => [a] -> [a]
+srt [] = []
+srt xs = x : srt (delete' x xs)
+  where x = minList xs
+
+-------------------------------------------------------------------------------
+
 square :: Int -> Int
 square x = x * x
 
@@ -72,6 +94,28 @@ count x (y:ys) | x == y    = succ (count x ys)
 average :: [Int] -> Rational 
 average [] = error "empty list" 
 average xs = toRational (sum xs) / toRational (length xs)
+
+-- Exercises ------------------------------------------------------------------
+
+-- 3.16
+averageWordLength :: String -> Rational
+averageWordLength s = average $ map length w
+  where w = words $ filter (`notElem` "?;:,.") s
+
+averageLength :: String -> Rational
+averageLength sonnet = average (map f (words sonnet))
+  where f = length . filter (`notElem` "’?;:,.")
+  
+-- 3.17
+sublist :: Eq a => [a] -> [a] -> Bool
+sublist [] xs      = True
+sublist xs []      = False
+sublist xs ys@(y:ys')
+  | prefix xs ys   = True
+  | sublist xs ys' = True
+  | otherwise      = False
+
+-------------------------------------------------------------------------------
 
 prefix :: Eq a => [a] -> [a] -> Bool
 prefix []     ys     = True
@@ -209,3 +253,23 @@ fMatch attr value fs = map (match attr value) fs
    where match a v f@(F a' v') | a == a'   = F a' v
                                | otherwise = f
 
+-- Exercises ------------------------------------------------------------------
+
+-- 3.19
+
+vow :: [[Feature]] -> [Feature]
+vow   = head . filter (`elem` yawelmaniVowels)
+
+hi :: Phoneme -> Value
+hi    = fValue High
+
+vh :: Phoneme -> Phoneme -> Phoneme
+vh p p' 
+  | hi p == hi p' = (fMatch Back  (fValue Back  p)
+                   . fMatch Round (fValue Round p)) p'
+  | otherwise     = p'
+
+appendSuffixY :: [Phoneme] -> [Phoneme] -> [Phoneme]
+appendSuffixY stem suffix = stem ++ map (vh (vow stem)) suffix
+
+-------------------------------------------------------------------------------
