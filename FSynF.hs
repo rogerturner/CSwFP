@@ -12,10 +12,18 @@ type Attack = (Column,Row)
 data Ship = Battleship | Frigate | Submarine | Destroyer 
             deriving Show
 
-data Reaction = Missed | Hit Ship | Sunk Ship | LostBattle 
+data Reaction = Missed | Hit Ship | Sunk Ship
                 deriving Show 
 
 type Turn = (Attack,Reaction) 
+
+data Defeat = LostBattle deriving Show
+
+type Surrender = (Attack, Defeat)
+
+data Game = S Surrender | T Turn Game deriving Show
+
+-------------------------------------------------------------------------------
 
 data Colour   = Red | Yellow | Blue | Green | Orange 
                 deriving (Eq,Show,Bounded,Enum)
