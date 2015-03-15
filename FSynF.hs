@@ -63,6 +63,8 @@ data TINF = Love | Admire | Help | Defeat | Catch
             deriving Show 
 data To   = To deriving Show
 
+-------------------------------------------------------------------------------
+
 data Form =  P String | Ng Form | Cnj [Form] | Dsj [Form] 
             deriving Eq
 
@@ -74,7 +76,32 @@ instance Show Form where
 
 form1, form2 :: Form
 form1 = Cnj [P "p", Ng (P "p")]
-form2 = Dsj [P "p1", P "p2", P "p3", P "p4"]
+form2 = Dsj [P "p1", P "p4", P "p3", Cnj [P "p2", P "p3"]]
+
+-- Ex 4.12
+opsNr :: Form -> Int
+opsNr (P   _)  = 0
+opsNr (Ng  f)  = opsNr f + 1
+opsNr (Cnj fs) = sum (map opsNr fs) + 1
+opsNr (Dsj fs) = sum (map opsNr fs) + 1
+
+-- Ex 4.13
+depth :: Form -> Int
+depth (P   _)  = 0
+depth (Ng  f)  = opsNr f + 1
+depth (Cnj []) = 1
+depth (Cnj fs) = maximum (map depth fs) + 1
+depth (Dsj []) = 1
+depth (Dsj fs) = maximum (map depth fs) + 1
+
+-- Ex 4.14
+propNames :: Form -> [String]
+propNames (P   s)  = [s]
+propNames (Ng  f)  = propNames f
+propNames (Cnj fs) = sort $ nub $ concatMap propNames fs
+propNames (Dsj fs) = sort $ nub $ concatMap propNames fs
+
+-------------------------------------------------------------------------------
 
 type Name     = String 
 type Index    = [Int]
