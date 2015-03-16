@@ -189,6 +189,18 @@ withoutIDs f            = f
 formula3 = Forall x
              (Impl (Atom "R" [x]) (Exists y 
                (Equi (Atom "R" [x]) (Atom "S" [y]))))
+               
+-- Ex 4.20
+
+nnf :: Formula Variable -> Formula Variable
+nnf (Neg (Neg f))      = nnf f
+nnf (Neg (Impl f1 f2)) = nnf (Neg (withoutIDs (Impl f1 f2)))
+nnf (Neg (Equi f1 f2)) = nnf (Neg (withoutIDs (Equi f1 f2)))
+nnf (Neg (Forall x f)) = Exists x (nnf (Neg f))
+nnf (Neg (Exists x f)) = Forall x (nnf (Neg f))
+nnf (Neg (Conj fs))    = Disj $ map (nnf . Neg) fs
+nnf (Neg (Disj fs))    = Conj $ map (nnf . Neg) fs
+nnf f                  = f
 
 -------------------------------------------------------------------------------
 
