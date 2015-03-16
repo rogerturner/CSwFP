@@ -173,6 +173,23 @@ freeIn (Exists x f)  = delete x (canon $ freeIn f)
 closedForm :: Formula Variable -> Bool
 closedForm f = freeIn f == []
 
+-- Ex 4.19
+
+withoutIDs :: Formula Variable -> Formula Variable
+withoutIDs (Neg f)      = Neg (withoutIDs f)
+withoutIDs (Impl f1 f2) = Disj [Neg (withoutIDs f1), withoutIDs f2]
+withoutIDs (Equi f1 f2) = Conj [Disj [Neg (withoutIDs f1), withoutIDs f2],
+                                Disj [Neg (withoutIDs f2), withoutIDs f1]]
+withoutIDs (Conj fs)    = Conj (map withoutIDs fs)
+withoutIDs (Disj fs)    = Disj (map withoutIDs fs)
+withoutIDs (Forall x f) = Forall x (withoutIDs f)
+withoutIDs (Exists x f) = Exists x (withoutIDs f)
+withoutIDs f            = f
+
+formula3 = Forall x
+             (Impl (Atom "R" [x]) (Exists y 
+               (Equi (Atom "R" [x]) (Atom "S" [y]))))
+
 -------------------------------------------------------------------------------
 
 data Term = Var Variable | Struct String [Term] 
