@@ -153,6 +153,28 @@ formula2 = Forall x
             (Forall y
               (Impl (Atom "R" [x,y]) (Atom "R" [y,x])))
 
+-------------------------------------------------------------------------------
+
+-- Ex 4.18
+
+canon = sort . nub
+
+freeIn :: Formula Variable -> [Variable]
+freeIn (Atom _ xs)   = canon xs
+freeIn (Eq x y)      = canon [x,y]
+freeIn (Neg f)       = canon $ freeIn f
+freeIn (Impl f1 f2)  = canon $ freeIn f1 ++ freeIn f2
+freeIn (Equi f1 f2)  = canon $ freeIn f1 ++ freeIn f2
+freeIn (Conj fs)     = canon $ concatMap freeIn fs
+freeIn (Disj fs)     = canon $ concatMap freeIn fs
+freeIn (Forall x f)  = delete x (canon $ freeIn f)
+freeIn (Exists x f)  = delete x (canon $ freeIn f)
+
+closedForm :: Formula Variable -> Bool
+closedForm f = freeIn f == []
+
+-------------------------------------------------------------------------------
+
 data Term = Var Variable | Struct String [Term] 
             deriving (Eq,Ord)
 
