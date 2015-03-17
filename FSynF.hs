@@ -226,5 +226,24 @@ varsInTerm (Var v)       = [v]
 varsInTerm (Struct s ts) = varsInTerms ts
 
 varsInTerms :: [Term] -> [Variable]
-varsInTerms = nub . concat . map varsInTerm
+varsInTerms = canon . concatMap varsInTerm
 
+-------------------------------------------------------------------------------
+
+-- Ex 4.22
+
+varsInForm :: Formula Term -> [Variable]
+varsInForm (Atom _ ts)  = varsInTerms ts
+varsInForm (Eq t1 t2)   = canon (varsInTerm t1 ++ varsInTerm t2)
+varsInForm (Neg f)      = varsInForm f
+varsInForm (Impl f1 f2) = canon (varsInForm f1 ++ varsInForm f2)
+varsInForm (Equi f1 f2) = canon (varsInForm f1 ++ varsInForm f2)
+varsInForm (Conj fs)    = canon $ concatMap varsInForm fs
+varsInForm (Disj fs)    = canon $ concatMap varsInForm fs
+varsInForm (Forall x f) = varsInForm f
+varsInForm (Exists x f) = varsInForm f
+
+txy = Struct "T" [tx,ty]
+formula4 = (Neg (Atom "U" [tz,txy]))
+formula5 = Forall x (Impl (Atom "R" [tx]) formula4)
+               
