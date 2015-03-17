@@ -246,4 +246,10 @@ varsInForm (Exists x f) = varsInForm f
 txy = Struct "T" [tx,ty]
 formula4 = (Neg (Atom "U" [tz,txy]))
 formula5 = Forall x (Impl (Atom "R" [tx]) formula4)
-               
+
+-- Ex 4.23
+              
+freeVarsInForm :: Formula Term -> [Variable]
+freeVarsInForm (Forall x f)  = delete x (canon $ freeVarsInForm f)
+freeVarsInForm (Exists x f)  = delete x (canon $ freeVarsInForm f)
+freeVarsInForm f             = varsInForm f
