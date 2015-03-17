@@ -253,3 +253,12 @@ freeVarsInForm :: Formula Term -> [Variable]
 freeVarsInForm (Forall x f)  = delete x (canon $ freeVarsInForm f)
 freeVarsInForm (Exists x f)  = delete x (canon $ freeVarsInForm f)
 freeVarsInForm f             = varsInForm f
+
+-- Ex 4.24
+
+openForm :: Formula Term -> Bool
+openForm f = freeVarsInForm f /= []
+
+formula6 = Forall x 
+            (Forall y
+              (Impl (Atom "R" [tx,ty]) (Atom "R" [ty,tx])))
