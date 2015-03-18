@@ -2,7 +2,7 @@ module FSemF where
 
 import Data.List
 import Data.Char (toUpper)
-import FSynF
+import FSynF hiding (propNames)
 
 type Grid = [(Column,Row)]
 
