@@ -47,6 +47,21 @@ defeated  (gs,g) = all (`elem` g) (concat gs)
 updateBattle :: Attack -> State -> State
 updateBattle p (gs,g) = (gs, insert p g)
 
+-------------------------------------------------------------------------------
+
+-- Ex 5.1
+lineupOK :: State -> Bool
+lineupOK (grids, _) = all gridOK grids
+  where
+    gridOK grid = (seql (cols grid) && same (rows grid))
+               || (same (cols grid) && seql (rows grid))
+    same (x:ys) = all (x ==) ys
+    seql xs     = and (zipWith (==) (map succ xs) (tail xs))
+    cols grid   = [ x | (x, _) <- grid]
+    rows grid   = [ x | (_, x) <- grid]
+
+-------------------------------------------------------------------------------
+
 propNames :: Form -> [String]
 propNames (P name) = [name]
 propNames (Ng f)   = propNames f
